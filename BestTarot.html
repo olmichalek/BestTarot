@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+  
+    body {
+    margin: 0;
+    background-color: beige; /* Optional background color for the whole body */
+	
+    }
+  
+  
+    .grid {
+      position: relative;
+      width: 590px;
+      height: 290px;
+      margin: auto;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+	  
+	  
+    }
+
+    .card {
+      width: 70px;
+      height: 100px;
+      margin: 10px;
+      background-color: #ccc;
+      position: absolute;
+      transition: transform 0.5s ease-in-out;
+	  
+    }
+	
+   .mybutton {
+    
+    background-color: #fee6e3;
+    border: 2px solid #111;
+    border-radius: 8px;
+    color: #111;
+    cursor: pointer;
+    font-family: Inter,sans-serif;
+    font-size: 16px;
+    height: 38px;
+    line-height: 24px;
+    max-width: 100%;
+    padding: 0 25px;
+    text-align: center; 
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation; 
+	margin-top: 3px; 
+	
+	}
+	
+	.header {
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold; /* Added font weight for a thicker appearance */
+  color: #333;
+  padding: 10px;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease-in-out;
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2); /* Added text shadow for emphasis */
+}
+
+.header:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+	
+	 .flipped-cards-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 110px;
+    }
+
+    .flipped-card {
+      width: 90px; 
+      height: 143px; 
+      margin: 5px;
+      border: 2px solid #111;
+	  background-size: cover; /* Maintain image aspect ratio */
+      background-position: center; /* Center the background image */
+    }
+  </style>
+</head>
+<body>
+<h1 class="header">Think about your questions and choose a card.<br>
+<button class="mybutton" onclick="shuffle()">Shuffle Cards</button></h1>
+
+<div class="grid" id="cardContainer"></div>
+<div class="flipped-cards-container" id="flippedCardsContainer"></div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  createTarotBoard();
+});
+
+let flippedCards = []; // Array to store flipped cards
+
+function createTarotBoard() {
+  const grid = document.querySelector(".grid");
+  const totalCards = cardArray.length;
+
+  for (let i = 0; i < totalCards; i++) {
+    createCard(i);
+  }
+
+ function createCard(index) {
+  const card = document.createElement("img");
+  card.setAttribute("src", "deck.jpg");
+  card.setAttribute("data-id", index);
+  card.className = "card";
+
+  // Generate random rotation between -20 and 20 degrees
+  const rotation = Math.floor(Math.random() * 41) - 20;
+  card.style.transform = `rotate(${rotation}deg)`;
+
+  // Use Fisher-Yates shuffle for random position within the grid
+  shuffleArray(cardArray);
+
+  const positionX = Math.random() * (grid.offsetWidth - card.offsetWidth);
+  const positionY = Math.random() * (grid.offsetHeight - card.offsetHeight);
+
+  card.style.left = positionX + "px";
+  card.style.top = positionY + "px";
+
+  grid.appendChild(card);
+
+  card.addEventListener("click", flipCard);
+}
+
+// Fisher-Yates shuffle function
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+
+  // flip Card function, for tarot will be much simplified.
+ function flipCard() {
+        let selected = this.dataset.id;
+        this.setAttribute("src", cardArray[selected].img);
+
+        // Create a div for the flipped card outside the grid
+        const flippedCardContainer = document.getElementById("flippedCardsContainer");
+        const flippedCard = document.createElement("div");
+        flippedCard.className = "flipped-card";
+        flippedCard.style.backgroundImage = `url('${cardArray[selected].img}')`;
+        flippedCardContainer.appendChild(flippedCard);
+
+        // Add the flipped card to the array
+        flippedCards.push(cardArray[selected]);
+
+        // Remove the flipped card from the grid
+       // this.remove();
+      }
+    }
+
+function shuffle() {
+  const grid = document.querySelector(".grid");
+  const flippedCardContainer = document.getElementById("flippedCardsContainer");
+  // Remove existing cards
+  while (grid.firstChild) {
+    grid.removeChild(grid.firstChild);
+  }
+   // Remove flipped container
+  while (flippedCardContainer.firstChild) {
+    flippedCardContainer.removeChild(flippedCardContainer.firstChild);
+  }
+   // Clear the flipped cards array
+      flippedCards = [];
+  createTarotBoard();
+  
+}
+
+// Tarot Card Flipping Game
+let cardArray = [
+  { name: "The Fool", img: "cards/the_fool.jpg" },
+  { name: "The Magician", img: "cards/the_magician.jpg" },
+  { name: "The High Priestess", img: "cards/the_high_priestess.jpg" },
+  { name: "The Empress", img: "cards/the_empress.jpg" },
+  { name: "The Emperor", img: "cards/the_emperor.jpg" },
+  { name: "The Hierophant", img: "cards/the_hierophant.jpg" },
+  { name: "The Lovers", img: "cards/the_lovers.jpg" },
+  { name: "The Chariot", img: "cards/the_chariot.jpg" },
+  { name: "Strength", img: "cards/strength.jpg" },
+  { name: "The Hermit", img: "cards/the_hermit.jpg" },
+  { name: "Wheel of Fortune", img: "cards/wheel_of_fortune.jpg" },
+  { name: "Justice", img: "cards/justice.jpg" },
+  { name: "The Hanged Man", img: "cards/the_hanged_man.jpg" },
+  { name: "Death", img: "cards/death.jpg" },
+  { name: "Temperance", img: "cards/temperance.jpg" },
+  { name: "The Devil", img: "cards/the_devil.jpg" },
+  { name: "The Tower", img: "cards/the_tower.jpg" },
+  { name: "The Star", img: "cards/the_star.jpg" },
+  { name: "The Moon", img: "cards/the_moon.jpg" },
+  { name: "The Sun", img: "cards/the_sun.jpg" },
+  { name: "Judgement", img: "cards/judgement.jpg" },
+  { name: "The World", img: "cards/the_world.jpg" },
+  // Wands
+  { name: "Ace of Wands", img: "cards/ace_of_wands.jpg" },
+  { name: "Two of Wands", img: "cards/two_of_wands.jpg" },
+  { name: "Three of Wands", img: "cards/three_of_wands.jpg" },
+  { name: "Four of Wands", img: "cards/four_of_wands.jpg" },
+  { name: "Five of Wands", img: "cards/five_of_wands.jpg" },
+  { name: "Six of Wands", img: "cards/six_of_wands.jpg" },
+  { name: "Seven of Wands", img: "cards/seven_of_wands.jpg" },
+  { name: "Eight of Wands", img: "cards/eight_of_wands.jpg" },
+  { name: "Nine of Wands", img: "cards/nine_of_wands.jpg" },
+  { name: "Ten of Wands", img: "cards/ten_of_wands.jpg" },
+  { name: "Page of Wands", img: "cards/page_of_wands.jpg" },
+  { name: "Knight of Wands", img: "cards/knight_of_wands.jpg" },
+  { name: "Queen of Wands", img: "cards/queen_of_wands.jpg" },
+  { name: "King of Wands", img: "cards/king_of_wands.jpg" },
+
+  // Cups
+  { name: "Ace of Cups", img: "cards/ace_of_cups.jpg" },
+  { name: "Two of Cups", img: "cards/two_of_cups.jpg" },
+  { name: "Three of Cups", img: "cards/three_of_cups.jpg" },
+  { name: "Four of Cups", img: "cards/four_of_cups.jpg" },
+  { name: "Five of Cups", img: "cards/five_of_cups.jpg" },
+  { name: "Six of Cups", img: "cards/six_of_cups.jpg" },
+  { name: "Seven of Cups", img: "cards/seven_of_cups.jpg" },
+  { name: "Eight of Cups", img: "cards/eight_of_cups.jpg" },
+  { name: "Nine of Cups", img: "cards/nine_of_cups.jpg" },
+  { name: "Ten of Cups", img: "cards/ten_of_cups.jpg" },
+  { name: "Page of Cups", img: "cards/page_of_cups.jpg" },
+  { name: "Knight of Cups", img: "cards/knight_of_cups.jpg" },
+  { name: "Queen of Cups", img: "cards/queen_of_cups.jpg" },
+  { name: "King of Cups", img: "cards/king_of_cups.jpg" },
+
+  // Swords
+  { name: "Ace of Swords", img: "cards/ace_of_swords.jpg" },
+  { name: "Two of Swords", img: "cards/two_of_swords.jpg" },
+  { name: "Three of Swords", img: "cards/three_of_swords.jpg" },
+  { name: "Four of Swords", img: "cards/four_of_swords.jpg" },
+  { name: "Five of Swords", img: "cards/five_of_swords.jpg" },
+  { name: "Six of Swords", img: "cards/six_of_swords.jpg" },
+  { name: "Seven of Swords", img: "cards/seven_of_swords.jpg" },
+  { name: "Eight of Swords", img: "cards/eight_of_swords.jpg" },
+  { name: "Nine of Swords", img: "cards/nine_of_swords.jpg" },
+  { name: "Ten of Swords", img: "cards/ten_of_swords.jpg" },
+  { name: "Page of Swords", img: "cards/page_of_swords.jpg" },
+  { name: "Knight of Swords", img: "cards/knight_of_swords.jpg" },
+  { name: "Queen of Swords", img: "cards/queen_of_swords.jpg" },
+  { name: "King of Swords", img: "cards/king_of_swords.jpg" },
+
+  // Pentacles
+  { name: "Ace of Pentacles", img: "cards/ace_of_pentacles.jpg" },
+  { name: "Two of Pentacles", img: "cards/two_of_pentacles.jpg" },
+  { name: "Three of Pentacles", img: "cards/three_of_pentacles.jpg" },
+  { name: "Four of Pentacles", img: "cards/four_of_pentacles.jpg" },
+  { name: "Five of Pentacles", img: "cards/five_of_pentacles.jpg" },
+  { name: "Six of Pentacles", img: "cards/six_of_pentacles.jpg" },
+  { name: "Seven of Pentacles", img: "cards/seven_of_pentacles.jpg" },
+  { name: "Eight of Pentacles", img: "cards/eight_of_pentacles.jpg" },
+  { name: "Nine of Pentacles", img: "cards/nine_of_pentacles.jpg" },
+  { name: "Ten of Pentacles", img: "cards/ten_of_pentacles.jpg" },
+  { name: "Page of Pentacles", img: "cards/page_of_pentacles.jpg" },
+  { name: "Knight of Pentacles", img: "cards/knight_of_pentacles.jpg" },
+  { name: "Queen of Pentacles", img: "cards/queen_of_pentacles.jpg" },
+  { name: "King of Pentacles", img: "cards/king_of_pentacles.jpg" }
+];
+
+
+</script>
+
+</body>
+</html>
